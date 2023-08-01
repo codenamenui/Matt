@@ -46,3 +46,11 @@ class Button:
         else:
             self.text = self.font.render(self.text_input, True, self.base_color)
     
+class User:
+    def __init__(self, username, sent, remaining):
+        self.username = username
+        self.sent = sent
+        self.remaining = remaining
+
+    def __str__(self):
+        return f"{self.username} {self.sent} {self.remaining}"

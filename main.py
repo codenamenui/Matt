@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 import json
 from functions import *
 from classes import *
@@ -26,7 +26,7 @@ accounts = {}
 
 # Images
 homeI = pygame.transform.scale(pygame.image.load("home.svg"), (50, 50))
-plusI = pygame.transform.scale(pygame.image.load("plus.svg"), (40, 50))
+plusI = pygame.transform.scale(pygame.image.load("plus.svg"), (50, 50))
 
 # Buttons
 homeB = Button(homeI, (50, 50), get_font(0))
@@ -93,9 +93,11 @@ while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if menuB['exit'].check(mouse):
                     pygame.quit()
+                    sys.exit()
                 elif menuB['overview'].check(mouse):
                     frame = "overview"
                 elif menuB['profiles'].check(mouse):
@@ -119,6 +121,7 @@ while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if homeB.check(mouse):
                     frame = "menu"
@@ -134,7 +137,12 @@ while True:
         homeB.changeColor(mouse)
         homeB.update(screen)
         overviewTxt = get_font(40).render("Registered Profiles", True, "black")
-        screen.blit(overviewTxt, overviewTxt.get_rect(center=(360, 50)))
+        screen.blit(overviewTxt, overviewTxt.get_rect(center=(330, 50)))
+        pygame.draw.line(screen, "black", (25, 100), (S_WIDTH - 25, 100), width=3)
+        pygame.draw.circle(screen, "black", (S_WIDTH//2 - 15, 110), 3)
+        pygame.draw.circle(screen, "black", (S_WIDTH//2, 110), 3)
+        pygame.draw.circle(screen, "black", (S_WIDTH//2 + 15, 110), 3)
+        pygame.draw.line(screen, "black", (25, 120), (S_WIDTH - 25, 120), width=3)
 
         for button in profilesB.values():
             button.changeColor(mouse)
@@ -143,6 +151,7 @@ while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if homeB.check(mouse):
                     frame = "menu"
@@ -161,9 +170,9 @@ while True:
                         for event in pygame.event.get():
                             if event.type == pygame.QUIT:
                                 pygame.quit()
+                                sys.exit()
                             if event.type == pygame.KEYDOWN:
-                                if event.key == pygame.K_1:
-                                    running = False
+                                pass
 
                         clock.tick(UPS)
                         pygame.display.update()
@@ -184,6 +193,7 @@ while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if homeB.check(mouse):
                     frame = "menu"
