@@ -195,6 +195,59 @@ while True:
         pygame.draw.line(screen, "black", (25, 120),
                          (S_WIDTH - 25, 120), width=3)
 
+        x = 25
+        y = 150
+
+        titleTxt = get_font(30).render("General", True, "black")
+        screen.blit(titleTxt, titleTxt.get_rect(midleft=(x, y)))
+
+        check = pygame.transform.scale(
+            pygame.image.load("check-solid.svg"), (x-5, 15))
+
+        # conversion
+        checkbox_01_border = pygame.draw.rect(
+            screen, 'black', pygame.Rect(x, y+30, 30, 30), width=2)
+
+        check_01 = get_font(30).render(
+            "Toggle Money Conversion to PHP", True, "black")
+        screen.blit(check_01, check_01.get_rect(midleft=(x+50, y+45)))
+
+        if conversion:
+            screen.blit(check, check.get_rect(midleft=(x+5, y+45)))
+
+        # tutorial
+        checkbox_02_border = pygame.draw.rect(
+            screen, 'black', pygame.Rect(x, y+90, 30, 30), width=2)
+
+        check_02 = get_font(30).render(
+            "Toggle Tutorial for New Users", True, "black")
+        screen.blit(check_02, check_02.get_rect(midleft=(x+50, y+105)))
+
+        if tutorial:
+            screen.blit(check, check.get_rect(midleft=(x+5, y+105)))
+
+        # flavor
+        checkbox_03_border = pygame.draw.rect(
+            screen, 'black', pygame.Rect(x, y+150, 30, 30), width=2)
+
+        check_03 = get_font(30).render(
+            "Toggle Flavor Text", True, "black")
+        screen.blit(check_03, check_03.get_rect(midleft=(x+50, y+165)))
+
+        if flavor:
+            screen.blit(check, check.get_rect(midleft=(x+5, y+165)))
+
+        # darkMode
+        checkbox_04_border = pygame.draw.rect(
+            screen, 'black', pygame.Rect(x, y+210, 30, 30), width=2)
+
+        check_04 = get_font(30).render(
+            "Toggle Dark Mode", True, "black")
+        screen.blit(check_04, check_04.get_rect(midleft=(x+50, y+225)))
+
+        if darkMode:
+            screen.blit(check, check.get_rect(midleft=(x+5, y+225)))
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -202,6 +255,14 @@ while True:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if homeB.check(mouse):
                     frame = "menu"
+                elif checkbox_01_border.collidepoint(mouse):
+                    conversion = not conversion
+                elif checkbox_02_border.collidepoint(mouse):
+                    tutorial = not tutorial
+                elif checkbox_03_border.collidepoint(mouse):
+                    flavor = not flavor
+                elif checkbox_04_border.collidepoint(mouse):
+                    darkMode = not darkMode
 
         clock.tick(UPS)
         pygame.display.update()
