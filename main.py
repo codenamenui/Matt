@@ -2,6 +2,7 @@ import pygame
 import json
 from functions import *
 from classes import *
+from sys import exit
 
 pygame.init()
 
@@ -32,12 +33,12 @@ plusI = pygame.transform.scale(pygame.image.load("plus.svg"), (40, 50))
 homeB = Button(homeI, (50, 50), get_font(0))
 
 baseline = 325
-menuB = { "overview" : Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 0), get_font(30), "overview", "black", "white", "purple"),
-                "profiles" : Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 1), get_font(30), "profiles", "black", "white", "purple"),
-                "options" : Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 2), get_font(30), "options", "black", "white", "purple"),
-                "exit" : Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 3), get_font(30), "exit", "black", "white", "purple"),
-                # "" : Button()
-                }
+menuB = {"overview": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 0), get_font(30), "overview", "black", "white", "purple"),
+         "profiles": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 1), get_font(30), "profiles", "black", "white", "purple"),
+         "options": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 2), get_font(30), "options", "black", "white", "purple"),
+         "exit": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 3), get_font(30), "exit", "black", "white", "purple"),
+         # "" : Button()
+         }
 
 # overviewB = { "" : Button(),
 #                 "" : Button(),
@@ -46,12 +47,12 @@ menuB = { "overview" : Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline 
 #                 "" : Button()
 #                 }
 
-profilesB = { "add" : Button(plusI, (S_WIDTH - 100, 50), get_font(0)),
-                # "" : Button(),
-                # "" : Button(),
-                # "" : Button(),
-                # "" : Button()
-                }
+profilesB = {"add": Button(plusI, (S_WIDTH - 100, 50), get_font(0)),
+             # "" : Button(),
+             # "" : Button(),
+             # "" : Button(),
+             # "" : Button()
+             }
 
 # optionsB = { "" : Button(),
 #                 "" : Button(),
@@ -93,9 +94,11 @@ while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if menuB['exit'].check(mouse):
                     pygame.quit()
+                    exit()
                 elif menuB['overview'].check(mouse):
                     frame = "overview"
                 elif menuB['profiles'].check(mouse):
@@ -107,18 +110,20 @@ while True:
         pygame.display.update()
 
     while frame == "overview":
-        
+
         screen.fill("white")
         mouse = pygame.mouse.get_pos()
 
         homeB.changeColor(mouse)
         homeB.update(screen)
-        overviewTxt = get_font(40).render("Overview of Profile 1", True, "black")
+        overviewTxt = get_font(40).render(
+            "Overview of Profile 1", True, "black")
         screen.blit(overviewTxt, overviewTxt.get_rect(center=(360, 50)))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if homeB.check(mouse):
                     frame = "menu"
@@ -127,7 +132,7 @@ while True:
         pygame.display.update()
 
     while frame == "profiles":
-        
+
         screen.fill("white")
         mouse = pygame.mouse.get_pos()
 
@@ -143,6 +148,7 @@ while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if homeB.check(mouse):
                     frame = "menu"
@@ -161,6 +167,7 @@ while True:
                         for event in pygame.event.get():
                             if event.type == pygame.QUIT:
                                 pygame.quit()
+                                exit()
                             if event.type == pygame.KEYDOWN:
                                 if event.key == pygame.K_1:
                                     running = False
@@ -172,18 +179,26 @@ while True:
         pygame.display.update()
 
     while frame == "options":
-        
+
         screen.fill("white")
         mouse = pygame.mouse.get_pos()
 
         homeB.changeColor(mouse)
         homeB.update(screen)
-        overviewTxt = get_font(40).render("Overview of Profile 1", True, "black")
-        screen.blit(overviewTxt, overviewTxt.get_rect(center=(360, 50)))
+        overviewTxt = get_font(40).render("Option", True, "black")
+        screen.blit(overviewTxt, overviewTxt.get_rect(center=(170, 50)))
+        pygame.draw.line(screen, "black", (25, 100),
+                         (S_WIDTH - 25, 100), width=3)
+        pygame.draw.circle(screen, "black", (S_WIDTH//2 - 15, 110),  3)
+        pygame.draw.circle(screen, "black", (S_WIDTH//2, 110),  3)
+        pygame.draw.circle(screen, "black", (S_WIDTH//2 + 15, 110), 3)
+        pygame.draw.line(screen, "black", (25, 120),
+                         (S_WIDTH - 25, 120), width=3)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if homeB.check(mouse):
                     frame = "menu"
