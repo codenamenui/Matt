@@ -129,7 +129,14 @@ while True:
         homeB.update(screen)
         overviewTxt = get_font(40).render(
             "Overview of Profile 1", True, "black")
-        screen.blit(overviewTxt, overviewTxt.get_rect(midleft=(100, 50)))
+        screen.blit(overviewTxt, overviewTxt.get_rect(midleft=(100, 55)))
+        pygame.draw.line(screen, "black", (25, 100),
+                         (S_WIDTH - 25, 100), width=3)
+        pygame.draw.circle(screen, "black", (S_WIDTH//2 - 15, 110),  3)
+        pygame.draw.circle(screen, "black", (S_WIDTH//2, 110),  3)
+        pygame.draw.circle(screen, "black", (S_WIDTH//2 + 15, 110), 3)
+        pygame.draw.line(screen, "black", (25, 120),
+                         (S_WIDTH - 25, 120), width=3)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -149,7 +156,7 @@ while True:
         homeB.changeColor(mouse)
         homeB.update(screen)
         profileTxt = get_font(40).render("Registered Profiles", True, "black")
-        screen.blit(profileTxt, profileTxt.get_rect(midleft=(100, 50)))
+        screen.blit(profileTxt, profileTxt.get_rect(midleft=(100, 55)))
         pygame.draw.line(screen, "black", (25, 100), (S_WIDTH - 25, 100), width=3)
         pygame.draw.circle(screen, "black", (S_WIDTH//2 - 15, 110), 3)
         pygame.draw.circle(screen, "black", (S_WIDTH//2, 110), 3)
@@ -158,16 +165,16 @@ while True:
 
         addTxt = get_font(15).render("Add Profile", True, "black")
         minusTxt = get_font(15).render("Remove Profile", True, "black")
-        screen.blit(addTxt, addTxt.get_rect(center=(S_WIDTH - 250, 70)))
-        screen.blit(minusTxt, minusTxt.get_rect(center=(S_WIDTH - 100, 70)))
+        screen.blit(addTxt, addTxt.get_rect(center=(S_WIDTH - 250, 80)))
+        screen.blit(minusTxt, minusTxt.get_rect(center=(S_WIDTH - 100, 80)))
 
         for i in range(1, 4):
             pygame.draw.line(screen, "black", (25, 120 + 175 * i), (S_WIDTH - 25, 120 + 175 * i), width=3)
-            
+        
         try:
-            current_profiles = enumerate(list(accounts.values())[index:index + 3])
+            current_profiles = list(enumerate(list(accounts.values())[index:index + 3]))
         except:
-            current_profiles = enumerate(list(accounts.values())[index:index])  
+            current_profiles = list(enumerate(list(accounts.values())[index:index]))
 
         baseline = 150
         for i, prof in current_profiles:
@@ -188,7 +195,7 @@ while True:
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 5:
-                    if index < 3:
+                    if index < len(accounts) - 3:
                         index += 1
                 elif event.button == 4:
                     if index > 0:
@@ -197,26 +204,25 @@ while True:
                     if homeB.check(mouse):
                         frame = "menu"
                     elif profilesB['add'].check(mouse):
-                        running = True
-                        while running:
-
-                            mouse = pygame.mouse.get_pos()
-                            bigRect = pygame.Rect(0, 0, 400, 500)
-                            bigRect.center = (S_WIDTH//2, S_HEIGHT//2)
-                            smallRect = pygame.Rect(0, 0, 400 - 6, 500 - 6)
-                            smallRect.center = (S_WIDTH//2, S_HEIGHT//2)
-                            pygame.draw.rect(screen, "black", bigRect, width=3)
-                            pygame.draw.rect(screen, "purple", smallRect)
-
-                            for event in pygame.event.get():
-                                if event.type == pygame.QUIT:
-                                    pygame.quit()
-                                    sys.exit()
-                                if event.type == pygame.KEYDOWN:
-                                    pass
-
-                            clock.tick(UPS)
-                            pygame.display.update()
+                        inp = add("Name", "Balance (in PHP)", screen, S_WIDTH, clock)
+                        screen.blit(pygame.transform.scale(pygame.image.load("cross.svg"), (30, 40)), (617, 171))
+                        if inp == None:
+                            pass
+                        elif inp[0] in accounts:
+                            prompt("Profile already exists!", screen, S_WIDTH, clock)
+                        else:
+                            accounts[inp[0]] = User(inp[0], inp[1], 0)
+                            prompt("Profile successfuly created!", screen, S_WIDTH, clock)
+                    elif profilesB['minus'].check(mouse):
+                        inp = remove("username", screen, S_WIDTH, clock)
+                        screen.blit(pygame.transform.scale(pygame.image.load("cross.svg"), (30, 40)), (617, 243))
+                        if inp == None:
+                            pass
+                        elif inp in accounts:
+                            del accounts[inp]
+                            prompt("Profile deleted.", screen, S_WIDTH, clock)
+                        else:
+                            prompt("Profile does not exist.", screen, S_WIDTH, clock)
 
         clock.tick(UPS)
         pygame.display.update()
@@ -229,7 +235,7 @@ while True:
         homeB.changeColor(mouse)
         homeB.update(screen)
         overviewTxt = get_font(40).render("Option", True, "black")
-        screen.blit(overviewTxt, overviewTxt.get_rect(center=(170, 50)))
+        screen.blit(overviewTxt, overviewTxt.get_rect(midleft=(100, 55)))
         pygame.draw.line(screen, "black", (25, 100),
                          (S_WIDTH - 25, 100), width=3)
         pygame.draw.circle(screen, "black", (S_WIDTH//2 - 15, 110),  3)
