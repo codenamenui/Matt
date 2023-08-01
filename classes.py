@@ -47,10 +47,10 @@ class Button:
             self.text = self.font.render(self.text_input, True, self.base_color)
     
 class User:
-    def __init__(self, username, sent, remaining):
+    def __init__(self, username, remaining, spent):
         self.username = username
-        self.sent = sent
         self.remaining = remaining
+        self.spent = spent
 
     def __str__(self):
-        return f"{self.username} {self.sent} {self.remaining}"
+        return f"{self.username} {self.remaining} {self.spent}"
