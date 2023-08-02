@@ -37,6 +37,18 @@ lastuserTxt = ""
 formatted_time = datetime.datetime.now().strftime("%m/%d/%y")
 date = formatted_time
 
+# Images
+homeI = pygame.transform.scale(pygame.image.load("home.svg"), (50, 50))
+plusI = pygame.transform.scale(pygame.image.load("plus.svg"), (40, 40))
+minusI = pygame.transform.scale(pygame.image.load("minus.svg"), (40, 40))
+trashI = pygame.transform.scale(pygame.image.load("trash.svg"), (50, 50))
+location = pygame.transform.scale(pygame.image.load("location.png"), (S_WIDTH - 90, 300))
+sendI = pygame.transform.scale(pygame.image.load("send.svg"), (30, 30))
+helpI = pygame.transform.scale(pygame.image.load("help.svg"), (40, 40))
+gear1I = pygame.transform.scale(pygame.image.load("gears1.png"), (340, 340))
+gear2I = pygame.transform.scale(pygame.image.load("gears1.png"), (175, 175))
+gear3I = pygame.transform.scale(pygame.image.load("gears2.png"), (190, 190))
+
 # Account
 accounts = {}
 with open("accounts.json", "a+") as file:
@@ -48,14 +60,6 @@ with open("accounts.json", "a+") as file:
     else:
         for name, user in data.items():
             accounts[name] = User(user['username'], user['remaining'], user['spent'], user['chosen'], user['expenses'])
-
-# Images
-homeI = pygame.transform.scale(pygame.image.load("home.svg"), (50, 50))
-plusI = pygame.transform.scale(pygame.image.load("plus.svg"), (40, 40))
-minusI = pygame.transform.scale(pygame.image.load("minus.svg"), (40, 40))
-trashI = pygame.transform.scale(pygame.image.load("trash.svg"), (50, 50))
-location = pygame.transform.scale(pygame.image.load("location.png"), (S_WIDTH - 90, 300))
-sendI = pygame.transform.scale(pygame.image.load("send.svg"), (30, 30))
 
 # Buttons
 baseline = 200
@@ -97,12 +101,16 @@ pick = False
 if darkMode:
     bgColor = (30, 30, 30)
     textColor = "white"
-    # del homeI, plusI, minusI, trashI
     homeI = pygame.transform.scale(pygame.image.load("home-white.svg"), (50, 50))
     plusI = pygame.transform.scale(pygame.image.load("plus-white.svg"), (40, 40))
     minusI = pygame.transform.scale(pygame.image.load("minus-white.svg"), (40, 40))
     trashI = pygame.transform.scale(pygame.image.load("trash-white.svg"), (50, 50))
+    location = pygame.transform.scale(pygame.image.load("location.png"), (S_WIDTH - 90, 300))
     sendI = pygame.transform.scale(pygame.image.load("send-white.svg"), (30, 30))
+    helpI = pygame.transform.scale(pygame.image.load("help-white.svg"), (30, 30))
+    gear1I = pygame.transform.scale(pygame.image.load("gears1-white.png"), (340, 340))
+    gear2I = pygame.transform.scale(pygame.image.load("gears1-white.png"), (175, 175))
+    gear3I = pygame.transform.scale(pygame.image.load("gears2-white.png"), (190, 190))
 
     homeB = Button(homeI, (50, 50), get_font(0))
 
@@ -130,6 +138,9 @@ if darkMode:
     addlocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline), get_font(20), "Location", base_color=textColor, color=bgColor)
     removelocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline + 100), get_font(20), "Location", base_color=textColor, color=bgColor)
 
+    mapHelpB = Button(helpI, (S_WIDTH - 80, 50), get_font(0))
+    dateHelpB = Button(helpI, (632, 605), get_font(0))
+
 else:
     bgColor = "white"
     textColor = "black"
@@ -137,7 +148,12 @@ else:
     plusI = pygame.transform.scale(pygame.image.load("plus.svg"), (40, 40))
     minusI = pygame.transform.scale(pygame.image.load("minus.svg"), (40, 40))
     trashI = pygame.transform.scale(pygame.image.load("trash.svg"), (50, 50))
+    location = pygame.transform.scale(pygame.image.load("location.png"), (S_WIDTH - 90, 300))
     sendI = pygame.transform.scale(pygame.image.load("send.svg"), (30, 30))
+    helpI = pygame.transform.scale(pygame.image.load("help.svg"), (30, 30))
+    gear1I = pygame.transform.scale(pygame.image.load("gears1.png"), (340, 340))
+    gear2I = pygame.transform.scale(pygame.image.load("gears1.png"), (175, 175))
+    gear3I = pygame.transform.scale(pygame.image.load("gears2.png"), (190, 190))
 
     homeB = Button(homeI, (50, 50), get_font(0))
 
@@ -165,6 +181,8 @@ else:
     addlocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline), get_font(20), "Location", base_color=textColor, color=bgColor)
     removelocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline + 100), get_font(20), "Location", base_color=textColor, color=bgColor)
 
+    mapHelpB = Button(helpI, (S_WIDTH - 80, 50), get_font(0))
+    dateHelpB = Button(helpI, (632, 605), get_font(0))
 
 frame = "menu"
 index = 0
@@ -180,7 +198,7 @@ while True:
             break
 
     while frame == "menu":
-  
+    
         mouse = pygame.mouse.get_pos()
 
         screen.fill(bgColor)
@@ -234,7 +252,7 @@ while True:
     baselineY = 460
     dateB = Button(pygame.Rect(0, 0, 100, 30), (600, 473), get_font(25), formatted_time, base_color=textColor, color=bgColor)
 
-    buildingTexts = {}
+    buildingTexts = {"" : ""}
     for loc, desc in buildings_info.items():
         buildingTexts[loc] = []
         desc = split_description(desc, 6)
@@ -258,7 +276,11 @@ while True:
     except:
         pass
 
-    frequentedPlace = max(moneyInArea, key=moneyInArea.get, default="")
+    if moneyInArea[max(moneyInArea, key=moneyInArea.get)] == 0:
+        frequentedPlace = ""
+    else:
+        frequentedPlace = max(moneyInArea, key=moneyInArea.get)
+
     displayMoneyPlace = locationlist[0]
 
     while frame == "overview":
@@ -350,12 +372,26 @@ while True:
             if loc.picked:
                 loc.circle(screen)
 
+        if tutorial:
+            for button in [mapHelpB, dateHelpB]:
+                button.update(screen)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
+                    if tutorial:
+                        if mapHelpB.check(mouse):
+                            tutor(1, ["The map shows the different areas around the DLSU Campus.",
+                                   "Clicking the white boxes in the", "buildings shows the total spending in that area.",
+                                   "Alternatively, it can be used to pick", "which location to add or remove spendings from."], screen, S_WIDTH, clock, textColor, bgColor)
+                        elif dateHelpB.check(mouse):
+                            tutor(2, ["Entering a valid date into the date box shows the spendings in that day.",
+                                   "Clicking the Location button allows for", "picking which location to add/remove spendings on.",
+                                   "Simply click on the white boxes in the map to select that area.",
+                                   "Clicking the input textboxes labeled with currency", "allows user to type in a valid amount of money", "to add or spendings on a location."], screen, S_WIDTH, clock, textColor, bgColor)
                     for i in range(len(locs)):
                         if locs[i].check(mouse) and pick:
                             for loc in locs:
@@ -660,7 +696,10 @@ while True:
                         frame = "menu"
                     elif profilesB['add'].check(mouse):
                         inp = add("Name", "Balance (in PHP)", screen, S_WIDTH, clock, textColor, bgColor, darkMode)
-                        screen.blit(pygame.transform.scale(pygame.image.load("cross.svg"), (30, 40)), (617, 171))
+                        if darkMode:
+                            screen.blit(pygame.transform.scale(pygame.image.load("cross-white.svg"), (30, 40)), (617, 171))
+                        else:
+                            screen.blit(pygame.transform.scale(pygame.image.load("cross.svg"), (30, 40)), (617, 171))
                         if inp == None:
                             pass
                         elif inp[0] in accounts:
@@ -742,6 +781,21 @@ while True:
         if darkMode:
             screen.blit(check, check.get_rect(midleft=(x+5, y+165)))
 
+        baselineX = 25
+        baselineY = S_HEIGHT - 140
+        nameTxt = get_font(25).render("Matthew Ceazar P. Talicol", True, textColor)
+        idTxt = get_font(25).render("12217204", True, textColor)
+        subjTxt = get_font(25).render("LBYEC2B - EQ1", True, textColor)
+        versionTxt = get_font(25).render("Python Version", True, textColor)
+        screen.blit(nameTxt, (baselineX, baselineY))
+        screen.blit(idTxt, (baselineX, baselineY + 30 * 1))
+        screen.blit(subjTxt, (baselineX, baselineY + 30 * 2))
+        screen.blit(versionTxt, (baselineX, baselineY + 30 * 3))
+
+        screen.blit(gear1I, (S_WIDTH - 350, S_HEIGHT - 350))
+        screen.blit(gear2I, (S_WIDTH - 512, S_HEIGHT - 188))
+        screen.blit(gear3I, (S_WIDTH - 198, S_HEIGHT - 483))
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -761,12 +815,16 @@ while True:
                     if darkMode:
                         bgColor = (30, 30, 30)
                         textColor = "white"
-                        # del homeI, plusI, minusI, trashI
                         homeI = pygame.transform.scale(pygame.image.load("home-white.svg"), (50, 50))
                         plusI = pygame.transform.scale(pygame.image.load("plus-white.svg"), (40, 40))
                         minusI = pygame.transform.scale(pygame.image.load("minus-white.svg"), (40, 40))
                         trashI = pygame.transform.scale(pygame.image.load("trash-white.svg"), (50, 50))
+                        location = pygame.transform.scale(pygame.image.load("location.png"), (S_WIDTH - 90, 300))
                         sendI = pygame.transform.scale(pygame.image.load("send-white.svg"), (30, 30))
+                        helpI = pygame.transform.scale(pygame.image.load("help-white.svg"), (30, 30))
+                        gear1I = pygame.transform.scale(pygame.image.load("gears1-white.png"), (340, 340))
+                        gear2I = pygame.transform.scale(pygame.image.load("gears1-white.png"), (175, 175))
+                        gear3I = pygame.transform.scale(pygame.image.load("gears2-white.png"), (190, 190))
 
                         homeB = Button(homeI, (50, 50), get_font(0))
 
@@ -794,6 +852,9 @@ while True:
                         addlocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline), get_font(20), "Location", base_color=textColor, color=bgColor)
                         removelocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline + 100), get_font(20), "Location", base_color=textColor, color=bgColor)
 
+                        mapHelpB = Button(helpI, (S_WIDTH - 80, 50), get_font(0))
+                        dateHelpB = Button(helpI, (632, 605), get_font(0))
+
                     else:
                         bgColor = "white"
                         textColor = "black"
@@ -801,7 +862,12 @@ while True:
                         plusI = pygame.transform.scale(pygame.image.load("plus.svg"), (40, 40))
                         minusI = pygame.transform.scale(pygame.image.load("minus.svg"), (40, 40))
                         trashI = pygame.transform.scale(pygame.image.load("trash.svg"), (50, 50))
+                        location = pygame.transform.scale(pygame.image.load("location.png"), (S_WIDTH - 90, 300))
                         sendI = pygame.transform.scale(pygame.image.load("send.svg"), (30, 30))
+                        helpI = pygame.transform.scale(pygame.image.load("help.svg"), (30, 30))
+                        gear1I = pygame.transform.scale(pygame.image.load("gears1.png"), (340, 340))
+                        gear2I = pygame.transform.scale(pygame.image.load("gears1.png"), (175, 175))
+                        gear3I = pygame.transform.scale(pygame.image.load("gears2.png"), (190, 190))
 
                         homeB = Button(homeI, (50, 50), get_font(0))
 
@@ -828,6 +894,9 @@ while True:
 
                         addlocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline), get_font(20), "Location", base_color=textColor, color=bgColor)
                         removelocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline + 100), get_font(20), "Location", base_color=textColor, color=bgColor)
+
+                        mapHelpB = Button(helpI, (S_WIDTH - 80, 50), get_font(0))
+                        dateHelpB = Button(helpI, (632, 605), get_font(0))
 
         clock.tick(UPS)
         pygame.display.update()

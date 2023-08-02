@@ -56,7 +56,7 @@ def add(bufname1, bufname2, screen, S_WIDTH, clock, textColor, bgColor, darkMode
     if darkMode:
         hover = (200, 200, 200)
     else:
-        hover = "black"
+        hover = textColor
     buf1 = Button(pygame.Rect(0, 0, 300, 50), (S_WIDTH//2, 260), get_font(
         20), bufname1, (100, 100, 100), color=bgColor, hovering_color=hover)
     buf2 = Button(pygame.Rect(0, 0, 300, 50), (S_WIDTH//2, 360), get_font(
@@ -67,17 +67,17 @@ def add(bufname1, bufname2, screen, S_WIDTH, clock, textColor, bgColor, darkMode
         20), "Submit", textColor, color=bgColor, hovering_color=hover)
 
     bufborder1 = Button(pygame.Rect(0, 0, 310, 60), (S_WIDTH//2, 360), get_font(
-        20), "", (100, 100, 100), color="black")
+        20), "", (100, 100, 100), color=textColor)
     bufborder2 = Button(pygame.Rect(0, 0, 310, 60), (S_WIDTH//2, 260), get_font(
-        20), "", (100, 100, 100), color="black")
+        20), "", (100, 100, 100), color=textColor)
     submitborder = Button(pygame.Rect(0, 0, 110, 60), (S_WIDTH//2, 470), get_font(
-        20), "", color="black")
+        20), "", color=textColor)
 
     con = True
     while con:
         border = pygame.Rect(0, 0, 410, 410)
         border.center = (S_WIDTH//2, 360)
-        pygame.draw.rect(screen, "black", border)
+        pygame.draw.rect(screen, textColor, border)
         box = pygame.Rect(0, 0, 400, 400)
         box.center = (S_WIDTH//2, 360)
         pygame.draw.rect(screen, bgColor, box)
@@ -136,74 +136,12 @@ def add(bufname1, bufname2, screen, S_WIDTH, clock, textColor, bgColor, darkMode
                      buf2.text_input = buftxt2
                      buf2.txt()
         
-        # if darkMode:
-        #     screen.blit(pygame.transform.scale(pygame.image.load("cross-white.svg"), (30, 40)), (617, 171))
-        # else:
-        #     screen.blit(pygame.transform.scale(pygame.image.load("cross.svg"), (30, 40)), (617, 171))
-        screen.blit(pygame.transform.scale(pygame.image.load("cross.svg"), (30, 40)), (617, 171))
+        if darkMode:
+            screen.blit(pygame.transform.scale(pygame.image.load("cross-white.svg"), (30, 40)), (617, 171))
+        else:
+            screen.blit(pygame.transform.scale(pygame.image.load("cross.svg"), (30, 40)), (617, 171))
         # Update Screen
         clock.tick(60)
-        pygame.display.flip()
-        
-def remove(txt, screen, S_WIDTH, clock):
-    titlebool = False
-    titletxt = ""
-    title = Button(pygame.Rect(0, 0, 300, 50), (S_WIDTH//2, 330), get_font(
-        20), txt, (100, 100, 100))
-    submit = Button(pygame.Rect(0, 0, 100, 50), (S_WIDTH//2, 430), get_font(
-        20), "Submit", textColor)
-    cancel = Button(pygame.Rect(0, 0, 30, 40), (632, 263), get_font(
-        20), "")
-    titleborder = Button(pygame.Rect(0, 0, 310, 60), (S_WIDTH//2, 330), get_font(
-        20), "", (100, 100, 100), color=textColor)
-    submitborder = Button(pygame.Rect(0, 0, 110, 60), (S_WIDTH//2, 430), get_font(
-        20), "", color=textColor)
-    
-    con = True
-    while con:
-        border = pygame.Rect(0, 0, 410, 260)
-        border.center = (S_WIDTH//2, 360)
-        pygame.draw.rect(screen, textColor, border)
-        box = pygame.Rect(0, 0, 400, 250)
-        box.center = (S_WIDTH//2, 360)
-        pygame.draw.rect(screen, bgColor, box)
-        
-        # Getting Mouse Coords
-        mouse_pos = pygame.mouse.get_pos()
-                       
-        for button in [titleborder, submitborder, submit, title, cancel]:
-            button.changeColor(mouse_pos)
-            button.update(screen)
-        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if cancel.check(mouse_pos):
-                    return None
-                elif title.check(mouse_pos):
-                    titlebool = True
-                    title.text_input = titletxt
-                elif submit.check(mouse_pos):
-                    return titletxt
-            if event.type == pygame.KEYDOWN:
-                if titlebool:
-                    if len(titletxt) == 20 and keyboardinput(event) != "del":
-                        pass
-                    elif keyboardinput(event) == None:
-                        pass
-                    elif keyboardinput(event) != "del":
-                        titletxt += keyboardinput(event)
-                    else:
-                        titletxt = titletxt[:-1]
-                    title.text_input = titletxt
-                    title.txt()
-        
-        screen.blit(pygame.transform.scale(pygame.image.load("cross.svg"), (30, 40)), (617, 243))
-        # Limit Updates per Second to 300
-        clock.tick(60)
-        # Update Screen
         pygame.display.flip()
 
 def prompt(txt, screen, S_WIDTH, clock, textColor, bgColor):
@@ -213,7 +151,7 @@ def prompt(txt, screen, S_WIDTH, clock, textColor, bgColor):
         t2 = t1.get_rect(center=(S_WIDTH//2, 360))
         border = pygame.Rect(0,0, S_WIDTH//2 - 40, 90)
         border.center = (S_WIDTH//2, 360)
-        pygame.draw.rect(screen, "black", border)
+        pygame.draw.rect(screen, textColor, border)
         temprect = pygame.Rect(0,0, S_WIDTH//2 - 50, 80)
         temprect.center = (S_WIDTH//2, 360)
         pygame.draw.rect(screen, bgColor, temprect)
@@ -242,3 +180,33 @@ def saveSettings(conversion, tutorial, darkMode):
     settings = {'conversion' : conversion, 'tutorial' : tutorial, 'darkMode' : darkMode}
     with open("settings.json", "w") as f:
         json.dump(settings, f, indent=4)
+
+def tutor(num, texts, screen, S_WIDTH, clock, textColor, bgColor):
+    con = True
+    while con:
+        border = pygame.Rect(0,0, S_WIDTH//2 - 40, 300)
+        border.center = (S_WIDTH//2, 360)
+        pygame.draw.rect(screen, textColor, border)
+        temprect = pygame.Rect(0,0, S_WIDTH//2 - 50, 290)
+        temprect.center = (S_WIDTH//2, 360)
+        pygame.draw.rect(screen, bgColor, temprect)
+        if num == 1:
+            for i, txt in enumerate(texts):
+                t1 = get_font(15).render(txt, True, textColor)
+                t2 = t1.get_rect(center=(S_WIDTH//2, 260 + 50 * i))
+                screen.blit(t1, t2)
+        elif num == 2:
+            for i, txt in enumerate(texts):
+                t1 = get_font(15).render(txt, True, textColor)
+                t2 = t1.get_rect(center=(S_WIDTH//2, 260 + 35 * i))
+                screen.blit(t1, t2)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                return
+        # Limit Updates per Second to 300
+        clock.tick(60)
+        # Update Screen
+        pygame.display.flip()
