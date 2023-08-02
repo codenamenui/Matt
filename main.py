@@ -409,11 +409,11 @@ while True:
                         if conversion:
                             accounts[lastuserTxt].remaining -= float(addExpenseTxt)
                             accounts[lastuserTxt].spent += float(addExpenseTxt)
-                            accounts[lastuserTxt].expenses[dateTxt][current_loc] = accounts[lastuserTxt].expenses.setdefault(dateTxt, {}).setdefault(current_loc, 0) + float(addExpenseTxt)
+                            accounts[lastuserTxt].expenses[dateTxt][current_loc] = accounts[lastuserTxt].expenses.setdefault(dateTxt, {}).get(current_loc, 0) + float(addExpenseTxt)
                         else:
                             accounts[lastuserTxt].remaining -= float(addExpenseTxt) * 55
                             accounts[lastuserTxt].spent += float(addExpenseTxt) * 55
-                            accounts[lastuserTxt].expenses[dateTxt][current_loc] = accounts[lastuserTxt].expenses.setdefault(dateTxt, {}).setdefault(current_loc, 0) + float(addExpenseTxt) * 55
+                            accounts[lastuserTxt].expenses[dateTxt][current_loc] = accounts[lastuserTxt].expenses.setdefault(dateTxt, {}).get(current_loc, 0) + float(addExpenseTxt) * 55
                         addExpenseTxt = ""
                         if conversion:
                             addExpenseB.text_input = " PHP"
@@ -443,11 +443,11 @@ while True:
                         if conversion:
                             accounts[lastuserTxt].remaining += float(removeExpenseTxt)
                             accounts[lastuserTxt].spent -= float(removeExpenseTxt)
-                            accounts[lastuserTxt].expenses[dateTxt][current_loc] = accounts[lastuserTxt].expenses.setdefault(dateTxt, {}).setdefault(current_loc, 0) - float(removeExpenseTxt)
+                            accounts[lastuserTxt].expenses[dateTxt][current_loc] = accounts[lastuserTxt].expenses.setdefault(dateTxt, {}).get(current_loc, 0) - float(removeExpenseTxt)
                         else:
                             accounts[lastuserTxt].remaining += float(removeExpenseTxt) * 55
                             accounts[lastuserTxt].spent -= float(removeExpenseTxt) * 55
-                            accounts[lastuserTxt].expenses[dateTxt][current_loc] = accounts[lastuserTxt].expenses.setdefault(dateTxt, {}).setdefault(current_loc, 0) - float(removeExpenseTxt) * 55
+                            accounts[lastuserTxt].expenses[dateTxt][current_loc] = accounts[lastuserTxt].expenses.setdefault(dateTxt, {}).get(current_loc, 0) - float(removeExpenseTxt) * 55
                         
                         removeExpenseTxt = ""
                         if conversion:
@@ -505,6 +505,8 @@ while True:
                             dateB.text_input = dateTxt
                             dateB.txt()
                             dateBool = False
+                        else:
+                            accounts[lastuserTxt].expenses.setdefault(dateTxt, {})
                 if event.button == 5:
                     if index < len(accounts[lastuserTxt].expenses.get(dateTxt, {})) - 7:
                         index += 1
@@ -708,7 +710,7 @@ while True:
                             for user in accounts.values():
                                 if user.chosen:
                                     user.chosen = False
-                            accounts[inp[0]] = User(inp[0], int(inp[1]), 0, chosen=True)
+                            accounts[inp[0]] = User(inp[0], int(inp[1]), 0, True, {})
                             lastuserTxt = inp[0]
                             prompt("Profile successfuly created!", screen, S_WIDTH, clock, textColor, bgColor)
                             save(accounts)
