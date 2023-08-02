@@ -49,17 +49,17 @@ class Button:
         else:
             self.text = self.font.render(self.text_input, True, self.base_color)
 
-    def border(self, screen, color):
+    def border(self, screen, color, offset=3):
         rect = self.rect
-        rect.top -= 3
-        rect.left -= 3
+        rect.top -= offset
+        rect.left -= offset
         rect.width += 6
         rect.height += 6
         pygame.draw.rect(screen, color, rect)
         rect.width -= 6
         rect.height -= 6
-        rect.top += 3
-        rect.left += 3
+        rect.top += offset
+        rect.left += offset
 
     def circle(self, screen, color="red"):
         circle = self.rect.center

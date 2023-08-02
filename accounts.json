@@ -1,0 +1,46 @@
+{
+    "321": {
+        "username": "321",
+        "remaining": 32021.0,
+        "spent": 289300.0,
+        "chosen": false,
+        "expenses": {
+            "08/02/23": {
+                "St. La Salle Hall": 110.0,
+                "Yuchengco Hall": 55.0,
+                "Bloemen Hall": 165.0,
+                "EGI Taft Tower": 220.0,
+                "Agno Compound": 275.0,
+                "One Archer's Place": 330.0,
+                "Green Corner": 385.0
+            },
+            "01/01/01": {
+                "Yuchengco Hall": 287760.0
+            }
+        }
+    },
+    "2313": {
+        "username": "2313",
+        "remaining": 21321,
+        "spent": 0,
+        "chosen": false,
+        "expenses": {}
+    },
+    "brandon": {
+        "username": "brandon",
+        "remaining": 812175.0,
+        "spent": 187825.0,
+        "chosen": true,
+        "expenses": {
+            "08/02/23": {
+                "Yuchengco Hall": 55.0,
+                "St. La Salle Hall": 110.0,
+                "Bloemen Hall": 179685.0,
+                "EGI Taft Tower": 220.0,
+                "Agno Compound": 275.0,
+                "One Archer's Place": 715.0,
+                "Green Corner": 6765.0
+            }
+        }
+    }
+}

@@ -22,31 +22,32 @@ bgColor = "white"
 # Variable
 locationlist = ["Yuchengco Hall", "St. La Salle Hall", "Bloemen Hall", 
                 "EGI Taft Tower", "Agno Compound", "One Archer's Place",
-                "GC"]
+                "Green Corner"]
+buildings_info = {
+    "St. La Salle Hall": "One of the most iconic of DLSU's buildings, St La Salle Hall's interior houses more than just various classrooms and faculty rooms, but also its own food place for students to grab a hearty meal.",
+    "Yuchengco Hall": "Housing the museum of DLSU's history isn't the only thing that Yuchengco Hall is known for. It is also home to the university's own convenient National Bookstore and store for DLSU merch, as well as a Power Mac Center.",
+    "Bloemen Hall": "The large combination of various food stalls in Bloemen hall is a surefire way to quench any thirst and sate most hungers. This building is also home to the Green Giants FM recording studio, constantly playing various songs in the background of the building.",
+    "EGI Taft Tower": "The tower adjacent to Gokongwei Hall is home to a sizeable amount of Lasallians looking for an apartment close to the campus. It also has various food places to eat at on its ground floor for passersby to stop at.",
+    "Agno Compound": "Similar to Bloemen Hall, this area is home to a wide variety of eateries and stores for meals. Its close proximity to the campus makes it a hotspot for students on their way around the university.",
+    "One Archer's Place": "A towering building similar to EGI Taft Tower, it is also home to many Lasallians. Featured in its lowest floors is a cafe, computer shop, and several other smaller amenities for the eager students within.",
+    "Green Corner": "A small section close to the campus housing a Starbucks and 7-11 as well as a parking lot for students and faculty with vehicles. Students may flock here to collect a tasty dose of coffee often."
+    }
 lastuserTxt = ""
 # Format the date and time as 00/00/00
 formatted_time = datetime.datetime.now().strftime("%m/%d/%y")
 date = formatted_time
 
 # Account
-accounts = {
-            "1" : User("1", 23232, 3232, True, {date : {locationlist[1] : 10000, locationlist[2] : 20000}}),
-            # "2" : User("2", 23232, 3232),
-            # "3" : User("3", 23232, 3232),
-            # "4" : User("4", 23232, 3232),
-            # "5" : User("5", 23232, 3232),
-            # "6" : User("6", 23232, 3232),
-            # "7" : User("7", 23232, 3232),
-            }
-
-# with open("accounts.json", "a+") as file:
-#     file.seek(0)
-#     try:
-#         data = json.load(file)
-#     except json.JSONDecodeError:
-#         pass
-#     else:
-#         return data
+accounts = {}
+with open("accounts.json", "a+") as file:
+    file.seek(0)
+    try:
+        data = json.load(file)
+    except json.JSONDecodeError:
+        pass
+    else:
+        for name, user in data.items():
+            accounts[name] = User(user['username'], user['remaining'], user['spent'], user['chosen'], user['expenses'])
 
 # Images
 homeI = pygame.transform.scale(pygame.image.load("home.svg"), (50, 50))
@@ -57,19 +58,6 @@ location = pygame.transform.scale(pygame.image.load("location.png"), (S_WIDTH - 
 sendI = pygame.transform.scale(pygame.image.load("send.svg"), (30, 30))
 
 # Buttons
-homeB = Button(homeI, (50, 50), get_font(0))
-
-baseline = 325
-menuB = {"overview": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 0), get_font(30), "overview", textColor, bgColor, "purple"),
-         "profiles": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 1), get_font(30), "profiles", textColor, bgColor, "purple"),
-         "options": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 2), get_font(30), "options", textColor, bgColor, "purple"),
-         "exit": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 3), get_font(30), "exit", textColor, bgColor, "purple")
-         }
-
-profilesB = {"add": Button(plusI, (S_WIDTH - 250, 40), get_font(0)),
-             "minus": Button(minusI, (S_WIDTH - 100, 40), get_font(0)),
-             }
-
 baseline = 200
 deleteButtons = [Button(trashI, (S_WIDTH - 100, baseline), get_font(0)),
                  Button(trashI, (S_WIDTH - 100, baseline + 175 * 1), get_font(0)),
@@ -90,22 +78,95 @@ locs = [Button(pygame.Rect(0, 0, 20, 20), (192, 211), get_font(0)),
         Button(pygame.Rect(0, 0, 20, 20), (740, 275), get_font(0)),
         Button(pygame.Rect(0, 0, 20, 20), (780, 232), get_font(0))]
 
-baseline = 550
-addlocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline), get_font(20), "Location", base_color=textColor)
-removelocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline + 100), get_font(20), "Location", base_color=textColor)
-
-sendAddB = Button(sendI, (630, baseline - 1), get_font(0))
-sendRemoveB = Button(sendI, (630, baseline + 100 - 1), get_font(0))
- 
 # Settings
-conversion = False
-tutorial = True
-flavor = False
-darkMode = False
+settings = {}
+with open("settings.json", "a+") as file:
+    file.seek(0)
+    try:
+        data = json.load(file)
+    except json.JSONDecodeError:
+        pass
+    else:
+        settings = data
+conversion = settings.get('conversion', True)
+tutorial = settings.get('tutorial', True)
+darkMode = settings.get('darkMode', False)
 delete = False
 pick = False
 
-frame = "overview"
+if darkMode:
+    bgColor = (30, 30, 30)
+    textColor = "white"
+    # del homeI, plusI, minusI, trashI
+    homeI = pygame.transform.scale(pygame.image.load("home-white.svg"), (50, 50))
+    plusI = pygame.transform.scale(pygame.image.load("plus-white.svg"), (40, 40))
+    minusI = pygame.transform.scale(pygame.image.load("minus-white.svg"), (40, 40))
+    trashI = pygame.transform.scale(pygame.image.load("trash-white.svg"), (50, 50))
+    sendI = pygame.transform.scale(pygame.image.load("send-white.svg"), (30, 30))
+
+    homeB = Button(homeI, (50, 50), get_font(0))
+
+    baseline = 325
+    menuB = {"overview": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 0), get_font(30), "overview", textColor, (100, 100, 100), bgColor),
+             "profiles": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 1), get_font(30), "profiles", textColor, (100, 100, 100), bgColor),
+             "options": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 2), get_font(30), "options", textColor, (100, 100, 100), bgColor),
+             "exit": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 3), get_font(30), "exit", textColor, (100, 100, 100), bgColor)
+             }
+
+    profilesB = {"add": Button(plusI, (S_WIDTH - 250, 40), get_font(0)),
+                 "minus": Button(minusI, (S_WIDTH - 100, 40), get_font(0)),
+                 }
+
+    baseline = 200
+    deleteButtons = [Button(trashI, (S_WIDTH - 100, baseline), get_font(0)),
+                     Button(trashI, (S_WIDTH - 100, baseline + 175 * 1), get_font(0)),
+                     Button(trashI, (S_WIDTH - 100, baseline + 175 * 2), get_font(0))
+                    ]
+
+    baseline = 550
+    sendAddB = Button(sendI, (630, baseline - 1), get_font(0))
+    sendRemoveB = Button(sendI, (630, baseline + 100 - 1), get_font(0))
+
+    addlocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline), get_font(20), "Location", base_color=textColor, color=bgColor)
+    removelocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline + 100), get_font(20), "Location", base_color=textColor, color=bgColor)
+
+else:
+    bgColor = "white"
+    textColor = "black"
+    homeI = pygame.transform.scale(pygame.image.load("home.svg"), (50, 50))
+    plusI = pygame.transform.scale(pygame.image.load("plus.svg"), (40, 40))
+    minusI = pygame.transform.scale(pygame.image.load("minus.svg"), (40, 40))
+    trashI = pygame.transform.scale(pygame.image.load("trash.svg"), (50, 50))
+    sendI = pygame.transform.scale(pygame.image.load("send.svg"), (30, 30))
+
+    homeB = Button(homeI, (50, 50), get_font(0))
+
+    baseline = 325
+    menuB = {"overview": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 0), get_font(30), "overview", textColor, (100, 100, 100)),
+             "profiles": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 1), get_font(30), "profiles", textColor, (100, 100, 100)),
+             "options": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 2), get_font(30), "options", textColor, (100, 100, 100)),
+             "exit": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 3), get_font(30), "exit", textColor, (100, 100, 100))
+             }
+
+    profilesB = {"add": Button(plusI, (S_WIDTH - 250, 40), get_font(0)),
+                 "minus": Button(minusI, (S_WIDTH - 100, 40), get_font(0)),
+                 }
+
+    baseline = 200
+    deleteButtons = [Button(trashI, (S_WIDTH - 100, baseline), get_font(0)),
+                     Button(trashI, (S_WIDTH - 100, baseline + 175 * 1), get_font(0)),
+                     Button(trashI, (S_WIDTH - 100, baseline + 175 * 2), get_font(0))
+                    ]
+
+    baseline = 550
+    sendAddB = Button(sendI, (630, baseline - 1), get_font(0))
+    sendRemoveB = Button(sendI, (630, baseline + 100 - 1), get_font(0))
+
+    addlocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline), get_font(20), "Location", base_color=textColor, color=bgColor)
+    removelocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline + 100), get_font(20), "Location", base_color=textColor, color=bgColor)
+
+
+frame = "menu"
 index = 0
 while True:
 
@@ -118,9 +179,8 @@ while True:
             lastuserTxt = user.username
             break
 
-
     while frame == "menu":
-
+  
         mouse = pygame.mouse.get_pos()
 
         screen.fill(bgColor)
@@ -131,6 +191,8 @@ while True:
 
         for button in menuB.values():
             button.changeColor(mouse)
+            button.border(screen, textColor)
+            button.border(screen, textColor, -1)
             button.update(screen)
 
         for event in pygame.event.get():
@@ -157,7 +219,7 @@ while True:
     dateBool = False
     addExpenseTxt = ""
     removeExpenseTxt = ""
-    dateTxt = ""
+    dateTxt = formatted_time
     current_loc = ""
 
     baseline = 550
@@ -170,7 +232,34 @@ while True:
 
     baselineX = 355
     baselineY = 460
-    dateB = Button(pygame.Rect(0, 0, 100, 30), (600, 473), get_font(25), formatted_time)
+    dateB = Button(pygame.Rect(0, 0, 100, 30), (600, 473), get_font(25), formatted_time, base_color=textColor, color=bgColor)
+
+    buildingTexts = {}
+    for loc, desc in buildings_info.items():
+        buildingTexts[loc] = []
+        desc = split_description(desc, 6)
+        for i in range(len(desc)):
+            buildingTexts[loc].append(get_font(15).render(desc[i], True, textColor))
+
+    moneyInArea = {
+    "St. La Salle Hall": 0,
+    "Yuchengco Hall": 0,
+    "Bloemen Hall": 0,
+    "EGI Taft Tower": 0,
+    "Agno Compound": 0,
+    "One Archer's Place": 0,
+    "Green Corner": 0
+    }
+
+    try:
+        for date in accounts[lastuserTxt].expenses.values():
+            for loc,money in date.items():
+                moneyInArea[loc] += money
+    except:
+        pass
+
+    frequentedPlace = max(moneyInArea, key=moneyInArea.get, default="")
+    displayMoneyPlace = locationlist[0]
 
     while frame == "overview":
 
@@ -192,6 +281,13 @@ while True:
         pygame.draw.rect(screen, textColor, locationRect)
         screen.blit(location, location.get_rect(center=(S_WIDTH//2, 285)))
 
+        if conversion:
+            money = f'{moneyInArea[displayMoneyPlace]} PHP'
+        else:
+            money = f'{moneyInArea[displayMoneyPlace]/55:.2f} USD'
+        moneyArea = get_font(20).render(f'{displayMoneyPlace}: {money}', True, "black")
+        screen.blit(moneyArea, moneyArea.get_rect(topleft=(50, 140)))
+
         try:
             current_locations = list(accounts[lastuserTxt].expenses.get(dateTxt, {}).items())[index:index + 7]
         except:
@@ -212,22 +308,36 @@ while True:
         baselineY = 460
         frequentTxt = get_font(30).render("Most Frequented Area", True, textColor)
         screen.blit(frequentTxt, frequentTxt.get_rect(topleft=(baselineX + 315, baselineY)))
-        mostArea = get_font(20).render(f'{max(accounts[lastuserTxt].expenses.get(dateTxt, {}), key=accounts[lastuserTxt].expenses.get(dateTxt, {}).get, default="")}', True, textColor)
+        mostArea = get_font(20).render(f'{frequentedPlace}', True, textColor)
         screen.blit(mostArea, mostArea.get_rect(center=(baselineX + 430, baselineY + 50)))
+        for i, text in enumerate(buildingTexts[frequentedPlace], 1):
+            screen.blit(text, text.get_rect(midtop=(baselineX+430, baselineY + 60 + 20 * i)))
         spendingTxt = get_font(25).render("Spending Overview for ", True, textColor)
         screen.blit(spendingTxt, spendingTxt.get_rect(topleft=(baselineX, baselineY)))
         newTxt = get_font(20).render(f"Input New Spendings", True, textColor)
         screen.blit(newTxt, newTxt.get_rect(topleft=(baselineX, baselineY + 40)))
         if conversion:
-            money = f'{accounts[lastuserTxt].remaining}'
+            money = f'{accounts[lastuserTxt].remaining} PHP'
         else:
-            money = f'{accounts[lastuserTxt].remaining/55:.2f}'
+            money = f'{accounts[lastuserTxt].remaining/55:.2f} USD'
         balanceTxt = get_font(20).render(f"Balance: {money}", True, textColor)
         screen.blit(balanceTxt, balanceTxt.get_rect(topleft=(baselineX + 150, baselineY + 40)))
         removeTxt = get_font(20).render(f"Remove Spendings", True, textColor)
         screen.blit(removeTxt, removeTxt.get_rect(topleft=(baselineX, baselineY + 140)))
 
         pygame.draw.line(screen, textColor, (baselineX, 580), (baselineX + 300, 580), width=3)
+
+        if pick:
+            addlocsB.base_color = (60, 150, 150)
+            removelocsB.base_color = (60, 150, 150)
+            addlocsB.txt()
+            removelocsB.txt()
+        else:
+            addlocsB.base_color = textColor
+            removelocsB.base_color = textColor
+            addlocsB.txt()
+            removelocsB.txt()
+
 
         for button in [addlocsB, removelocsB, addExpenseB, removeExpenseB, dateB]:
             button.border(screen, textColor)
@@ -256,7 +366,7 @@ while True:
                             locs[i].picked = True
                             pick = False
                         elif locs[i].check(mouse) and not pick:
-                            pass
+                            displayMoneyPlace = locationlist[i]
                     if sendAddB.check(mouse) and current_loc != "":
                         if addExpenseTxt == "":
                             addExpenseTxt = "0"
@@ -274,6 +384,23 @@ while True:
                         else:
                             addExpenseB.text_input = " USD"
                         addExpenseB.txt()
+
+                        moneyInArea = {
+                        "St. La Salle Hall": 0,
+                        "Yuchengco Hall": 0,
+                        "Bloemen Hall": 0,
+                        "EGI Taft Tower": 0,
+                        "Agno Compound": 0,
+                        "One Archer's Place": 0,
+                        "Green Corner": 0
+                        }
+
+                        for date in accounts[lastuserTxt].expenses.values():
+                            for loc,money in date.items():
+                                moneyInArea[loc] += money
+
+                        frequentedPlace = max(moneyInArea, key=moneyInArea.get, default="")
+                        save(accounts)
                     elif sendRemoveB.check(mouse) and current_loc != "":
                         if removeExpenseTxt == "":
                             removeExpenseTxt = "0"
@@ -291,7 +418,24 @@ while True:
                             removeExpenseB.text_input = " PHP"
                         else:
                             removeExpenseB.text_input = " USD"
-                        removeExpenseB.txt()                    
+                        removeExpenseB.txt()
+
+                        moneyInArea = {
+                        "St. La Salle Hall": 0,
+                        "Yuchengco Hall": 0,
+                        "Bloemen Hall": 0,
+                        "EGI Taft Tower": 0,
+                        "Agno Compound": 0,
+                        "One Archer's Place": 0,
+                        "Green Corner": 0
+                        }
+
+                        for date in accounts[lastuserTxt].expenses.values():
+                            for loc,money in date.items():
+                                moneyInArea[loc] += money
+
+                        frequentedPlace = max(moneyInArea, key=moneyInArea.get, default="")
+                        save(accounts)                    
                     elif addlocsB.check(mouse) or removelocsB.check(mouse):
                         pick = True
                     elif addExpenseB.check(mouse):
@@ -437,7 +581,7 @@ while True:
         baseline = 150
         for i, prof in current_profiles:
             if prof.chosen:
-                color = "green"
+                color = (60, 150, 150)
             else:
                 color = textColor
             usernameTxt = get_font(40).render(str(prof.username), True, color)
@@ -482,14 +626,17 @@ while True:
                             accounts[lastuserTxt].chosen = False
                             lastuserTxt = accounts[keys[index]].username
                             accounts[keys[index]].chosen = True
+                            save(accounts)
                         elif selectButtons[1].check(mouse):
                             accounts[lastuserTxt].chosen = False
                             lastuserTxt = accounts[keys[index + 1]].username
                             accounts[keys[index + 1]].chosen = True
+                            save(accounts)
                         elif selectButtons[2].check(mouse):
                             accounts[lastuserTxt].chosen = False
                             lastuserTxt = accounts[keys[index + 2]].username
                             accounts[keys[index + 2]].chosen = True
+                            save(accounts)
                     except:
                         pass
                     if delete:
@@ -497,12 +644,15 @@ while True:
                             if deleteButtons[0].check(mouse):
                                 del accounts[keys[index]]
                                 lastuserTxt = ""
+                                save(accounts)
                             elif deleteButtons[1].check(mouse):
                                 del accounts[keys[index + 1]]
                                 lastuserTxt = ""
+                                save(accounts)
                             elif deleteButtons[2].check(mouse):
                                 del accounts[keys[index + 2]]
                                 lastuserTxt = ""
+                                save(accounts)
                         except:
                             pass
 
@@ -522,6 +672,7 @@ while True:
                             accounts[inp[0]] = User(inp[0], int(inp[1]), 0, chosen=True)
                             lastuserTxt = inp[0]
                             prompt("Profile successfuly created!", screen, S_WIDTH, clock, textColor, bgColor)
+                            save(accounts)
                     elif profilesB['minus'].check(mouse):
                         delete = not delete
 
@@ -553,10 +704,10 @@ while True:
 
         if darkMode:
             check = pygame.transform.scale(
-            pygame.image.load("check-white.svg"), (x-5, 15))
+            pygame.image.load("check-white.svg"), (x-5, 25))
         else:
             check = pygame.transform.scale(
-            pygame.image.load("check.svg"), (x-5, 15))
+            pygame.image.load("check.svg"), (x-5, 25))
 
         # conversion
         checkbox_01_border = pygame.draw.rect(
@@ -580,27 +731,16 @@ while True:
         if tutorial:
             screen.blit(check, check.get_rect(midleft=(x+5, y+105)))
 
-        # flavor
-        checkbox_03_border = pygame.draw.rect(
-            screen, textColor, pygame.Rect(x, y+150, 30, 30), width=2)
-
-        check_03 = get_font(30).render(
-            "Toggle Flavor Text", True, textColor)
-        screen.blit(check_03, check_03.get_rect(midleft=(x+50, y+165)))
-
-        if flavor:
-            screen.blit(check, check.get_rect(midleft=(x+5, y+165)))
-
         # darkMode
         checkbox_04_border = pygame.draw.rect(
-            screen, textColor, pygame.Rect(x, y+210, 30, 30), width=2)
+            screen, textColor, pygame.Rect(x, y+150, 30, 30), width=2)
 
         check_04 = get_font(30).render(
             "Toggle Dark Mode", True, textColor)
-        screen.blit(check_04, check_04.get_rect(midleft=(x+50, y+225)))
+        screen.blit(check_04, check_04.get_rect(midleft=(x+50, y+165)))
 
         if darkMode:
-            screen.blit(check, check.get_rect(midleft=(x+5, y+225)))
+            screen.blit(check, check.get_rect(midleft=(x+5, y+165)))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -611,12 +751,13 @@ while True:
                     frame = "menu"
                 elif checkbox_01_border.collidepoint(mouse):
                     conversion = not conversion
+                    saveSettings(conversion, tutorial, darkMode)
                 elif checkbox_02_border.collidepoint(mouse):
                     tutorial = not tutorial
-                elif checkbox_03_border.collidepoint(mouse):
-                    flavor = not flavor
+                    saveSettings(conversion, tutorial, darkMode)
                 elif checkbox_04_border.collidepoint(mouse):
                     darkMode = not darkMode
+                    saveSettings(conversion, tutorial, darkMode)
                     if darkMode:
                         bgColor = (30, 30, 30)
                         textColor = "white"
@@ -625,13 +766,15 @@ while True:
                         plusI = pygame.transform.scale(pygame.image.load("plus-white.svg"), (40, 40))
                         minusI = pygame.transform.scale(pygame.image.load("minus-white.svg"), (40, 40))
                         trashI = pygame.transform.scale(pygame.image.load("trash-white.svg"), (50, 50))
+                        sendI = pygame.transform.scale(pygame.image.load("send-white.svg"), (30, 30))
+
                         homeB = Button(homeI, (50, 50), get_font(0))
 
                         baseline = 325
-                        menuB = {"overview": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 0), get_font(30), "overview", textColor, bgColor, "purple"),
-                                 "profiles": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 1), get_font(30), "profiles", textColor, bgColor, "purple"),
-                                 "options": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 2), get_font(30), "options", textColor, bgColor, "purple"),
-                                 "exit": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 3), get_font(30), "exit", textColor, bgColor, "purple")
+                        menuB = {"overview": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 0), get_font(30), "overview", textColor, (100, 100, 100), bgColor),
+                                 "profiles": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 1), get_font(30), "profiles", textColor, (100, 100, 100), bgColor),
+                                 "options": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 2), get_font(30), "options", textColor, (100, 100, 100), bgColor),
+                                 "exit": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 3), get_font(30), "exit", textColor, (100, 100, 100), bgColor)
                                  }
 
                         profilesB = {"add": Button(plusI, (S_WIDTH - 250, 40), get_font(0)),
@@ -643,6 +786,14 @@ while True:
                                          Button(trashI, (S_WIDTH - 100, baseline + 175 * 1), get_font(0)),
                                          Button(trashI, (S_WIDTH - 100, baseline + 175 * 2), get_font(0))
                                         ]
+
+                        baseline = 550
+                        sendAddB = Button(sendI, (630, baseline - 1), get_font(0))
+                        sendRemoveB = Button(sendI, (630, baseline + 100 - 1), get_font(0))
+
+                        addlocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline), get_font(20), "Location", base_color=textColor, color=bgColor)
+                        removelocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline + 100), get_font(20), "Location", base_color=textColor, color=bgColor)
+
                     else:
                         bgColor = "white"
                         textColor = "black"
@@ -650,13 +801,15 @@ while True:
                         plusI = pygame.transform.scale(pygame.image.load("plus.svg"), (40, 40))
                         minusI = pygame.transform.scale(pygame.image.load("minus.svg"), (40, 40))
                         trashI = pygame.transform.scale(pygame.image.load("trash.svg"), (50, 50))
+                        sendI = pygame.transform.scale(pygame.image.load("send.svg"), (30, 30))
+
                         homeB = Button(homeI, (50, 50), get_font(0))
 
                         baseline = 325
-                        menuB = {"overview": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 0), get_font(30), "overview", textColor, bgColor, "purple"),
-                                 "profiles": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 1), get_font(30), "profiles", textColor, bgColor, "purple"),
-                                 "options": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 2), get_font(30), "options", textColor, bgColor, "purple"),
-                                 "exit": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 3), get_font(30), "exit", textColor, bgColor, "purple")
+                        menuB = {"overview": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 0), get_font(30), "overview", textColor, (100, 100, 100)),
+                                 "profiles": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 1), get_font(30), "profiles", textColor, (100, 100, 100)),
+                                 "options": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 2), get_font(30), "options", textColor, (100, 100, 100)),
+                                 "exit": Button(pygame.Rect(0, 0, 200, 50), (S_WIDTH//2, baseline + 75 * 3), get_font(30), "exit", textColor, (100, 100, 100))
                                  }
 
                         profilesB = {"add": Button(plusI, (S_WIDTH - 250, 40), get_font(0)),
@@ -668,6 +821,13 @@ while True:
                                          Button(trashI, (S_WIDTH - 100, baseline + 175 * 1), get_font(0)),
                                          Button(trashI, (S_WIDTH - 100, baseline + 175 * 2), get_font(0))
                                         ]
+
+                        baseline = 550
+                        sendAddB = Button(sendI, (630, baseline - 1), get_font(0))
+                        sendRemoveB = Button(sendI, (630, baseline + 100 - 1), get_font(0))
+
+                        addlocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline), get_font(20), "Location", base_color=textColor, color=bgColor)
+                        removelocsB = Button(pygame.Rect(0, 0, 100, 30), (408, baseline + 100), get_font(20), "Location", base_color=textColor, color=bgColor)
 
         clock.tick(UPS)
         pygame.display.update()

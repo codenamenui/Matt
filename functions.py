@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, json
 from classes import Button
 from datetime import datetime
 
@@ -228,3 +228,17 @@ def prompt(txt, screen, S_WIDTH, clock, textColor, bgColor):
         clock.tick(60)
         # Update Screen
         pygame.display.flip()
+
+def split_description(description, words_per_chunk=5):
+    words = description.split()
+    return [' '.join(words[i:i+words_per_chunk]) for i in range(0, len(words), words_per_chunk)]
+
+def save(accounts):
+    accounts = {key: user.__dict__ for key, user in accounts.items()}
+    with open("accounts.json", "w") as f:
+        json.dump(accounts, f, indent=4)
+
+def saveSettings(conversion, tutorial, darkMode):
+    settings = {'conversion' : conversion, 'tutorial' : tutorial, 'darkMode' : darkMode}
+    with open("settings.json", "w") as f:
+        json.dump(settings, f, indent=4)
