@@ -1,5 +1,14 @@
 import pygame, sys
 from classes import Button
+from datetime import datetime
+
+# Date Time
+def is_valid_date_format(date_string, date_format):
+    try:
+        datetime.strptime(date_string, date_format)
+        return True
+    except ValueError:
+        return False
 
 # Set the Font Style and Size to be Used
 def get_font(size):
@@ -114,7 +123,7 @@ def add(bufname1, bufname2, screen, S_WIDTH, clock, textColor, bgColor, darkMode
                      buf1.txt()
                  elif bufbool2:
                      print(keyboardinput(event))
-                     if len(buftxt2) == 20 and keyboardinput(event) != "del":
+                     if len(buftxt2) == 7 and keyboardinput(event) != "del":
                          pass
                      elif keyboardinput(event) == "del":
                          buftxt2 = buftxt2[:-1]
